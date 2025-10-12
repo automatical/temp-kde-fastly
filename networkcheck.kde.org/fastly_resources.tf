@@ -25,6 +25,10 @@ resource "fastly_service_vcl" "networkcheck" {
                     set obj.status = 200;
                     set obj.response = "OK";
                     set obj.http.Content-Type = "text/html";
+                    
+                    # IMPORTANT: Network Manager relies on the following header
+                    #            as part of it's "online" check.
+                    #            Ref: https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/blob/c1d94d70814d1d28ef842c3d81357575d78df954/src/core/nm-connectivity.c#L536
                     set obj.http.X-NetworkManager-Status = "online";
                     synthetic {"OK"};
                     return(deliver);

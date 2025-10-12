@@ -6,7 +6,7 @@ resource "fastly_service_vcl" "networkcheck" {
     }
 
     backend {
-        address = "localhost"
+        address = "127.0.0.1"
         name    = "localhost"
         port    = 80
     }
@@ -17,14 +17,17 @@ resource "fastly_service_vcl" "networkcheck" {
         name    = "main"
         content = <<-EOT
             sub vcl_recv {
-                return (synth(200, "OK"));
+                error 601;
             }
 
-            sub vcl_synth {
-                if (resp.status == 200) {
-                    set resp.http.Content-Type = "text/plain";
-                    synthetic("OK");
-                    return (deliver);
+            sub vcl_error {
+                if (obj.status == 601) {
+                    set obj.status = 200;
+                    set obj.response = "OK";
+                    set obj.http.Content-Type = "text/html";
+                    set obj.http.X-NetworkManager-Status = "online";
+                    synthetic {"OK"};
+                    return(deliver);
                 }
             }
         EOT

@@ -1,0 +1,7 @@
+# Copy to terraform.tfvars (git-ignored) or export as TF_VAR_<name>.
+s3_endpoint    = "s3.example.org"
+s3_bucket_name = "kde-fastly-logs"
+s3_access_key  = "CHANGEME"
+s3_secret_key  = "CHANGEME"
+# s3_path      = "/discuss.kde.org/%Y/%m/%d/"
+# log_period   = 300
